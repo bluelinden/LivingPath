@@ -1,21 +1,30 @@
-import main, utils, font_utils, save_data, wiki, specimen, ttf2otf
-import gui_utils as gu
-from PIL import ImageTk, Image
-from fontTools.ttLib import TTFont
+import os
+import platform
+import pprint
+import re
 import tkinter as tk
-from tkinter import TclError, ttk, Tk, Frame, Menu, Label, filedialog
-from tkinterdnd2 import DND_FILES
+from copy import deepcopy
 from functools import partial
-from iso639 import language  # python-iso639 and not iso639
+from tkinter import Frame, Label, Menu, TclError, Tk, filedialog, ttk
+
 import uharfbuzz as hb
-from hyperglot import checker, parse, languages
+from fontTools.ttLib import TTFont
+from hyperglot import checker, languages, parse
+from iso639 import language  # python-iso639 and not iso639
+from PIL import Image, ImageTk
 from playsound3 import (
     playsound,
 )  # before pip-install: pip install --upgrade setuptools wheel
-import re
-import platform
-from copy import deepcopy
-import pprint
+from tkinterdnd2 import DND_FILES
+
+import font_utils
+import gui_utils as gu
+import main
+import save_data
+import specimen
+import ttf2otf
+import utils
+import wiki
 
 visual_info = False
 
@@ -615,7 +624,7 @@ def selectPath_export(data):  # gui select folder to save font
         ext = ("Web Open Font 2", "*.woff2")
     file_path = filedialog.asksaveasfilename(
         title="Export Font File",
-        initialdir=utils.path,
+        initialdir=os.path.join(os.path.expanduser("~"), "Documents"),
         defaultextension="." + str(main.font.flavor) if main.font.flavor else ".otf",
         filetypes=(ext, ("All files", "*.*")),
         confirmoverwrite=True,
@@ -658,7 +667,7 @@ def selectPath_export(data):  # gui select folder to save font
 def import_font():
     filename = filedialog.askopenfilename(
         title="Open Font file",
-        initialdir=utils.path,
+        initialdir=os.path.join(os.path.expanduser("~"), ".local", "share", "fonts"),
         defaultextension=(".otf", ".ttf", ".woff", ".woff2"),
         filetypes=(
             ("Font files", ("*.otf", "*.ttf", "*.woff", "*.woff2")),

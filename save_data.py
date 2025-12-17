@@ -98,7 +98,7 @@ def dumpFile(filename):
 def load():
     filename = fd.askopenfilename(
         title="Open LivingPath file",
-        initialdir=utils.path,
+        initialdir=os.path.expanduser("~"),
         defaultextension=".lvp",
         filetypes=(("LivingPath files", "*.lvp"), ("All files", "*.*")),
     )

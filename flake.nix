@@ -52,8 +52,7 @@
             owner = "tatarize";
             repo = "potrace";
             rev = "769eadc85ab2ae6c3334686eaab0296fdfdf6abc";
-            hash =
-              "sha256-OzEFbbbm6qDn80UeNQWLHoQ3pfDgTPhbvLpk8ekUuDw=";
+            hash = "sha256-OzEFbbbm6qDn80UeNQWLHoQ3pfDgTPhbvLpk8ekUuDw=";
           };
 
           propagatedBuildInputs = with python.pkgs; [ numpy ];
@@ -168,6 +167,40 @@
           doCheck = false;
         };
 
+        pyautotrace = python.pkgs.buildPythonPackage rec {
+          pname = "pyautotrace";
+          version = "0.0.4";
+          format = "pyproject";
+
+          src = pkgs.fetchFromGitHub {
+            owner = "lemonyte";
+            repo = "pyautotrace";
+            rev = "v${version}";
+            hash = "sha256-CQjg5S4yvGIav7YG9kTxoQCjvmo9geK7AN6JRw5WAaY=";
+            fetchSubmodules = true;
+          };
+
+          nativeBuildInputs = with python.pkgs;
+            [ setuptools cython wheel pip ]
+            ++ [ pkgs.pkg-config pkgs.autotrace ];
+
+          buildInputs = [ pkgs.autotrace pkgs.glib ];
+
+          env.PKG_CONFIG_PATH = "${pkgs.autotrace}/lib/pkgconfig";
+
+          # Relax Cython version requirement
+          postPatch = ''
+            substituteInPlace pyproject.toml \
+              --replace-fail "Cython~=3.0.5" "Cython>=3.0"
+          '';
+
+          propagatedBuildInputs = with python.pkgs; [ numpy ];
+
+          # Skip import check - requires autotrace library at runtime
+          pythonImportsCheck = [ ];
+          doCheck = false;
+        };
+
         pythonDeps = with python.pkgs; [
           # Font tools
           fonttools
@@ -193,6 +226,8 @@
           beziers
           python-iso639
           wikipedia-api
+          tqdm
+          torch
 
           # Custom packages
           tkinterdnd2
@@ -202,6 +237,7 @@
           playsound3
           perlin-numpy
           hyperglot
+          pyautotrace
         ];
 
         livingpath = python.pkgs.buildPythonApplication {
@@ -211,6 +247,9 @@
           src = ./.;
 
           format = "other";
+
+          dontBuild = true;
+          dontConfigure = true;
 
           nativeBuildInputs = [ pkgs.makeWrapper ];
 

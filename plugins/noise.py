@@ -4,28 +4,33 @@ from PIL import ImageFilter, Image
 import cv2
 import numpy as np
 
+
 class Layer(Plugin):
     """Apply a blur then a threshold."""
 
     def gui(s, frame):
-
-
-        gui.Slider(frame, max=200, ini=30, layer=s, name='affects_border').pack(anchor='w')
-        gui.Slider(frame, max=20, min=1, ini=5, layer=s, name='shape_unity').pack(anchor='w')
-        gui.Slider(frame, max=100, min=1, ini=3, layer=s, name='noise_size').pack(anchor='w')
-        gui.Slider(frame, max=254, ini=200, layer=s, name='threshold').pack(anchor='w')
-
-
+        gui.Slider(frame, max=200, ini=30, layer=s, name="affects_border").pack(
+            anchor="w"
+        )
+        gui.Slider(frame, max=20, min=1, ini=5, layer=s, name="shape_unity").pack(
+            anchor="w"
+        )
+        gui.Slider(frame, max=100, min=1, ini=3, layer=s, name="noise_size").pack(
+            anchor="w"
+        )
+        gui.Slider(frame, max=254, ini=200, layer=s, name="threshold").pack(anchor="w")
 
     def run(s, img):
         img_size = img.size
 
-        img = img.filter( ImageFilter.GaussianBlur(radius = (s.affects_border,s.affects_border) ) )
+        img = img.filter(
+            ImageFilter.GaussianBlur(radius=(s.affects_border, s.affects_border))
+        )
 
         img = np.array(img)
 
         np.random.seed(5)
-        reduced = (img_size[1]//s.noise_size, img_size[0]//s.noise_size)
+        reduced = (img_size[1] // s.noise_size, img_size[0] // s.noise_size)
         noise = np.random.normal(5, 25, reduced).astype(np.uint8)
 
         noise = cv2.resize(noise, img_size, interpolation=cv2.INTER_LANCZOS4)
@@ -37,8 +42,10 @@ class Layer(Plugin):
         # noise = noise.astype(np.uint8)
 
         img = cv2.add(img, noise)
-        img = Image.fromarray(img, mode='L')
-        img = img.filter( ImageFilter.GaussianBlur(radius = (s.shape_unity,s.shape_unity) ) )
-        img = img.point( lambda p: 255 if p > s.threshold else 0 ) # threshold 128
+        img = Image.fromarray(img, mode="L")
+        img = img.filter(
+            ImageFilter.GaussianBlur(radius=(s.shape_unity, s.shape_unity))
+        )
+        img = img.point(lambda p: 255 if p > s.threshold else 0)  # threshold 128
 
         return img

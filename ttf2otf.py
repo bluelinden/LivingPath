@@ -2,6 +2,7 @@ from fontTools.cffLib import PrivateDict
 from fontTools.fontBuilder import FontBuilder
 from fontTools.misc.psCharStrings import T2CharString
 from fontTools.misc.roundTools import otRound
+
 # from fontTools.pens.cu2quPen import Cu2QuPen
 import fontTools as FT
 from fontTools.pens.qu2cuPen import Qu2CuPen
@@ -12,12 +13,13 @@ from fontTools.ttLib import TTFont
 from fontTools.ttLib.scaleUpem import scale_upem
 from cffsubr import subroutinize as subr
 import typing as t
-import pathops # pip install skia-pathops
+import pathops  # pip install skia-pathops
 
 # from https://github.com/fonttools/fonttools/blob/main/Snippets/ttf2otf.py
 
+
 def decomponentize_tt(font: TTFont) -> None:
-    """ Decomposes all composite glyphs of a TrueType font. """
+    """Decomposes all composite glyphs of a TrueType font."""
     if not font.sfntVersion == "\x00\x01\x00\x00":
         raise NotImplementedError(
             "Decomponentization is only supported for TrueType fonts."
@@ -40,7 +42,7 @@ def decomponentize_tt(font: TTFont) -> None:
 
 
 def skia_path_from_charstring(charstring: T2CharString) -> pathops.Path:
-    """ Get a Skia path from a T2CharString. """
+    """Get a Skia path from a T2CharString."""
     path = pathops.Path()
     path_pen = path.getPen(glyphSet=None)
     charstring.draw(path_pen)
@@ -48,7 +50,7 @@ def skia_path_from_charstring(charstring: T2CharString) -> pathops.Path:
 
 
 def charstring_from_skia_path(path: pathops.Path, width: int) -> T2CharString:
-    """ Get a T2CharString from a Skia path. """
+    """Get a T2CharString from a Skia path."""
     t2_pen = T2CharStringPen(width=width, glyphSet=None)
     path.draw(t2_pen)
     return t2_pen.getCharString()
@@ -153,7 +155,9 @@ def quadratics_to_cubics(
                 t2_pen, max_err=tolerance, all_cubic=True, reverse_direction=True
             )
             tt_glyph.draw(pen=qu2cu_pen, glyfTable=None)
-            print( f"Failed to convert glyph '{k}' to cubic at first attempt, but succeeded at second one." )
+            print(
+                f"Failed to convert glyph '{k}' to cubic at first attempt, but succeeded at second one."
+            )
 
         charstring = t2_pen.getCharString()
 
@@ -292,14 +296,11 @@ def build_otf(
     fb.setupPost(**post_values)
 
 
-
-def convert(font, subroutinize = True):
-
-    recalc_timestamp = True # Recalculate the font's modified timestamp on save.
-    max_err = 1.0 # The maximum error allowed when converting the font to TrueType.
-    new_upem = None # The target UPM to scale the font to.
-    correct_contours = True # Correct contours with pathops.
-
+def convert(font, subroutinize=True):
+    recalc_timestamp = True  # Recalculate the font's modified timestamp on save.
+    max_err = 1.0  # The maximum error allowed when converting the font to TrueType.
+    new_upem = None  # The target UPM to scale the font to.
+    correct_contours = True  # Correct contours with pathops.
 
     if font.sfntVersion != "\x00\x01\x00\x00":
         print(f"Font {font.reader.file.name} is not a TrueType font.")

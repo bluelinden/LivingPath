@@ -16,8 +16,6 @@ setup(
     ],
     packages=["reader"],
     include_package_data=True,
-    install_requires=[
-        "feedparser", "html2text", "importlib_resources", "typing"
-    ],
+    install_requires=["feedparser", "html2text", "importlib_resources", "typing"],
     entry_points={"console_scripts": ["realpython=reader.__main__:main"]},
 )

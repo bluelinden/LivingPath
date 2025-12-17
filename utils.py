@@ -186,8 +186,9 @@ try:
 except ImportError:
     fcntl = None
 
-LOCK_PATH = os.path.join(os.path.expanduser("~"), ".cache", "LivingPath")
-os.makedirs(LOCK_PATH, exist_ok=True)
+LOCK_DIR = os.path.join(os.path.expanduser("~"), ".cache", "LivingPath")
+os.makedirs(LOCK_DIR, exist_ok=True)
+LOCK_PATH = os.path.join(LOCK_DIR, "lock")
 OS_WIN = False
 if 'win32' in sys.platform.lower():
     OS_WIN = True

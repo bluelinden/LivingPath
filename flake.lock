@@ -37,7 +37,8 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "tkdnd": "tkdnd"
       }
     },
     "systems": {
@@ -52,6 +53,29 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tkdnd": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1765937608,
+        "narHash": "sha256-ROoWo1H8TDGfT2ofbsUXY3obEfb7XNZinOFOtPrSoxc=",
+        "owner": "bluelinden",
+        "repo": "tkdnd",
+        "rev": "ef464267f82dfcb07baf0f8b20cc2b7cab734484",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bluelinden",
+        "repo": "tkdnd",
         "type": "github"
       }
     }
